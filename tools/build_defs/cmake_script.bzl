@@ -267,6 +267,8 @@ def _tail_if_starts_with(str, start):
     return None
 
 def _absolutize(workspace_name, text, force = False):
+    if text.strip(" ").startswith("C:") or text.strip(" ").startswith("c:"):
+        return text
     return absolutize_path_in_str(workspace_name, "$EXT_BUILD_ROOT/", text, force)
 
 def _join_flags_list(workspace_name, flags):
