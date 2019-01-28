@@ -1,3 +1,6 @@
+load("@foreign_cc_platform_utils//:bazel_version.bzl", "BAZEL_VERSION")
+load(":select_windows_tests.bzl", "select_windows_tests")
+
 tests = [
     "//cmake:test_libgd",
     "//cmake:test_libpng",
@@ -39,15 +42,27 @@ test_suite(
     tests = tests + ["//configure_gnuplot:configure_libgd_tests"],
 )
 
+windows_tests = select_windows_tests(
+    BAZEL_VERSION,
+    tests + [
+        #        "//cmake_synthetic:test_libs",
+        #        "//configure_gnuplot:configure_libgd_tests",
+        "//cmake_hello_world_lib/static:test_hello_ninja",
+        #        "//cmake_hello_world_lib/static:test_hello_nmake",
+    ],
+    [":bazel_version"],
+)
+
 test_suite(
     name = "win_tests",
     tags = ["windows"],
-    tests = tests + [
-#        "//cmake_synthetic:test_libs",
-#        "//configure_gnuplot:configure_libgd_tests",
-        "//cmake_hello_world_lib/static:test_hello_ninja",
-#        "//cmake_hello_world_lib/static:test_hello_nmake",
-    ],
+    tests = windows_tests,
+)
+
+sh_test(
+    name = "bazel_version",
+    srcs = ["print_bazel_version.sh"],
+    args = [BAZEL_VERSION],
 )
 
 # On Bazel CI Mac machines, we are using cmake built from sources
