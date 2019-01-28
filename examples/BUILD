@@ -63,6 +63,7 @@ sh_test(
     name = "bazel_version",
     srcs = ["print_bazel_version.sh"],
     args = [BAZEL_VERSION],
+    tags = ["windows"],
 )
 
 # On Bazel CI Mac machines, we are using cmake built from sources
