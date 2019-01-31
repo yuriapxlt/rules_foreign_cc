@@ -77,6 +77,17 @@ def rules_foreign_cc_dependencies(
         preinstalled binaries by name (cmake, ninja) will be registered after
         'native_tools_toolchains' without any platform constraints.
         The default is True.
+
+        additonal_shell_toolchain_mappings: mappings of the shell toolchain functions to
+        execution and target platforms constraints. Similar to what defined in
+        @rules_foreign_cc//tools/build_defs/shell_toolchain/toolchains:toolchain_mappings.bzl
+        in the TOOLCHAIN_MAPPINGS list.
+        Please refer to example in @rules_foreign_cc//toolchain_examples.
+
+        additonal_shell_toolchain_package: a package under which additional toolchains, referencing
+        the generated data for the passed additonal_shell_toolchain_mappings, will be defined.
+        This value is needed since register_toolchains() is called for these toolchains.
+        Please refer to example in @rules_foreign_cc//toolchain_examples.
     """
     repositories()
     _read_build_options(name = "foreign_cc_platform_utils")
