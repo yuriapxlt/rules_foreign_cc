@@ -58,7 +58,11 @@ _read_build_options = repository_rule(
     environ = ["PATH"],
 )
 
-def rules_foreign_cc_dependencies(native_tools_toolchains = [], register_default_tools = True):
+def rules_foreign_cc_dependencies(
+        native_tools_toolchains = [],
+        register_default_tools = True,
+        additonal_shell_toolchain_mappings = [],
+        additonal_shell_toolchain_package = None):
     """ Call this function from the WORKSPACE file to initialize rules_foreign_cc
      dependencies and let neccesary code generation happen
      (Code generation is needed to support different variants of the C++ Starlark API.).
@@ -77,7 +81,10 @@ def rules_foreign_cc_dependencies(native_tools_toolchains = [], register_default
     repositories()
     _read_build_options(name = "foreign_cc_platform_utils")
 
-    shell_toolchain_workspace_initalization()
+    shell_toolchain_workspace_initalization(
+        additonal_shell_toolchain_mappings,
+        additonal_shell_toolchain_package,
+    )
     generate_implementation_fragments(name = "foreign_cc_impl")
 
     native.register_toolchains(*native_tools_toolchains)
