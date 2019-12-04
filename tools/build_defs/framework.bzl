@@ -231,8 +231,8 @@ def cc_external_rule_impl(ctx, attrs):
     define_variables = [
         set_cc_envs,
         "export EXT_BUILD_ROOT=##pwd##",
-        "export BUILD_TMPDIR=##tmpdir##",
-        "export EXT_BUILD_DEPS=##tmpdir##",
+        "export BUILD_TMPDIR=$$EXT_BUILD_ROOT$$/BUILD_TMPDIR",
+        "export EXT_BUILD_DEPS=$$EXT_BUILD_ROOT$$/EXT_BUILD_DEPS",
         "export INSTALLDIR=$$EXT_BUILD_ROOT$$/" + empty.file.dirname + "/" + lib_name,
     ]
 
@@ -243,6 +243,8 @@ def cc_external_rule_impl(ctx, attrs):
         "##script_prelude##",
         "\n".join(define_variables),
         "##path## $$EXT_BUILD_ROOT$$",
+        "##mkdirs## $$BUILD_TMPDIR$$",
+        "##mkdirs## $$EXT_BUILD_DEPS$$",
         "##mkdirs## $$INSTALLDIR$$",
         _print_env(),
         "\n".join(_copy_deps_and_tools(inputs)),
@@ -331,8 +333,7 @@ def wrap_outputs(ctx, lib_name, configure_name, script_text):
     cleanup_on_success_function = create_function(
         ctx,
         "cleanup_on_success",
-        """##echo## \"rules_foreign_cc: Cleaning temp directories\"
-rm -rf $BUILD_TMPDIR $EXT_BUILD_DEPS""",
+        """##echo## \"rules_foreign_cc: Leaving build directories\""""
     )
     cleanup_on_failure_function = create_function(
         ctx,
